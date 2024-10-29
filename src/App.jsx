@@ -13,6 +13,7 @@ const App = () => {
     try {
       const decoded = TCString.decode(consentString);
       setDecodedString(JSON.stringify(decoded, null, 2));
+      console.log(decoded)
     } catch (error) {
       setDecodedString('Invalid consent string');
     }
