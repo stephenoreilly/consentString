@@ -5,6 +5,33 @@ const App = () => {
   const [consentString, setConsentString] = useState('');
   const [decodedString, setDecodedString] = useState('');
 
+
+  function convertSetsToArrays(obj) {
+    // Check if the current object is an array
+    if (Array.isArray(obj)) {
+        return obj.map(convertSetsToArrays); // Recursively apply to each element
+    }
+    
+    // Check if the current object is a set
+    if (obj instanceof Set) {
+        return Array.from(obj); // Convert Set to Array
+    }
+
+    // If the current object is an object, traverse its properties
+    if (typeof obj === 'object' && obj !== null) {
+        const newObj = {};
+        for (const key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                newObj[key] = convertSetsToArrays(obj[key]); // Recursively apply to each property
+            }
+        }
+        return newObj;
+    }
+
+    // Return the original value if it's neither an array nor an object nor a set
+    return obj;
+}
+
   const handleInputChange = (event) => {
     setConsentString(event.target.value);
   };
@@ -12,7 +39,7 @@ const App = () => {
   const handleDecode = () => {
     try {
       const decoded = TCString.decode(consentString);
-      setDecodedString(JSON.stringify(decoded, null, 2));
+      setDecodedString(JSON.stringify(convertSetsToArrays(decoded), null, 2));
       console.log(decoded)
     } catch (error) {
       setDecodedString('Invalid consent string');
